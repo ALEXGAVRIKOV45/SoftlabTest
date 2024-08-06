@@ -10,7 +10,5 @@ public interface TestConfigurations extends Config, Reloadable {
     @DefaultValue("")
     String baseUrl();
 
-    @Key("waitSelenidetimeout")
-    @DefaultValue("4000")
-    int waitSelenidetimeout();
+
 }
