@@ -7,6 +7,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import config.ConfigManager;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.ru.И;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.Assertions;
 
 import org.openqa.selenium.WebDriver;
@@ -27,25 +28,25 @@ public class MainStepsTest extends BaseSteps {
     }
 
     String baseUrl = ConfigManager.TEST_CONFIG.baseUrl();
-
+    @Step("Открыть станицу сервиса")
     @И("открыть станицу сервиса")
     public void openBaseUrl() {
         mainPage.openBrowser(baseUrl);
         logger.info(format("Открыта страница сервиса"));
     }
-
+    @Step("Проверить что картинка присутствует")
     @И("проверить что {string} присутствует")
     public void checkElementVisible(String name) {
         SelenideElement element = mainPage.getImageElement(name);
         Assertions.assertTrue(element.isDisplayed());
         logger.info("Элемент {} присутствует", name);
     }
+    @Step("Проверить что присутствуют кнопки")
     @И("проверить что присутствуют кнопки:")
     public void checkButtonsIsDisplay(DataTable dataTable) {
         dataTable.asList().forEach(this::checkButtonVisible);
-//        logger.info("Кнопки присутствуют");
     }
-
+    @Step("Проверить что присутствуют кнопки")
     @И("проверить что кнопка {string} присутствует")
     public void checkButtonVisible(String name) {
         SelenideElement firstButtonName = mainPage.getFirstButtonName(name);
@@ -96,7 +97,7 @@ public class MainStepsTest extends BaseSteps {
     }
 
     @И("проверить что цвет {string} кнопки {string} {string}")
-    public void checkBackColorButton(String element,String name, String color) {
+    public void checkBackColorButton(String element, String name, String color) {
         String propertyName = null;
         String propertyColor = null;
         SelenideElement firstButtonName = mainPage.getFirstButtonName(name);
@@ -108,7 +109,26 @@ public class MainStepsTest extends BaseSteps {
             propertyColor = "rgba(43, 43, 43, 1)";
         else if (color.equalsIgnoreCase("белый"))
             propertyColor = "rgba(255, 255, 255, 1)";
-        firstButtonName.shouldHave(cssValue(propertyName,propertyColor));
+        else if (color.equalsIgnoreCase("серый"))
+            propertyColor = "rgba(43, 43, 43, 0.7)";
+        else if (color.equalsIgnoreCase("прозрачный"))
+            propertyColor = "rgba(0, 0, 0, 0)";
+        firstButtonName.shouldHave(cssValue(propertyName, propertyColor));
         logger.info("Цвет {} кнопки '{}' {}", element, name, color);
+    }
+
+    @И("проверить что присутствует текст {string}")
+    public void checkTextVisilble(String text) {
+        SelenideElement firstText = mainPage.getFirstText(text);
+        Assertions.assertTrue(firstText.isDisplayed());
+        logger.info("Текст '{}' присутствуют", text);
+    }
+
+    @И("кликнуть на карточку {string}")
+    public void clickCardName(String name) {
+        SelenideElement firstCardName = mainPage.getFirstCardName(name);
+        firstCardName.click();
+        logger.info("Нажата карточка '{}'", name);
+
     }
 }
